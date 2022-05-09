@@ -1,0 +1,105 @@
+<html>
+
+<head>
+    <!-- META info -->
+    <script>
+        // document.getElementById("password").style.display = "none";
+
+
+        function handlePasswordCheckbox() {
+            // Get the checkbox
+            const checkBox = document.getElementById("check-password");
+            const wrapper = document.getElementById("wrapper")
+                // Get the output text
+            const password = document.getElementById('password');
+            password.type = "password";
+            wrapper.appendChild(password);
+            // If the checkbox is checked, display the output text
+            if (checkBox.checked == true) {
+                password.style.display = "block";
+            } else {
+                password.style.display = "none";
+            }
+        }
+
+
+        function handleNewPasteClick() {
+            const textareaElement = document.getElementById("paste-content")
+            const pasteContent = textareaElement.value
+
+            // send http request to our api with paste content
+            submitPaste(pasteContent)
+                .then(() => {
+                    getPasteInfo()
+                    cleanup()
+                })
+                .catch((e) => {
+                    alert(e)
+                })
+        }
+
+        function getPasteInfo() {
+            const pcheck = document.getElementById("check-password").checked
+            const burn = document.getElementById("burn_after_read").checked
+            const title = document.getElementById("paste-title").value
+            const content = document.getElementById("paste-content").value
+            const password = document.getElementById("password").value
+            const code = document.getElementById("code").value
+            console.log("Password:", password, "| PasswordCheck:", pcheck, "| Burn:", burn, "| Title:", title, "| Content:", content, "|Code:", code)
+        }
+        async function submitPaste(pasteContent) {
+            if (!pasteContent) {
+                return
+            }
+            const pcheck = document.getElementById("check-password").checked
+            const burn = document.getElementById("burn_after_read").checked
+            const title = document.getElementById("paste-title").value
+            const content = document.getElementById("paste-content").value
+            const password = document.getElementById("password").value
+            const code = document.getElementById("code").value
+            items = {
+                "paste": pasteContent,
+                "password": password,
+                "use_password": pcheck,
+                "title": title,
+                "code": code,
+                "burn_after_read": burn
+            }
+            const url = "http://localhost:8000/api/pastepost/"
+            console.log("Req", JSON.stringify(items))
+            return await fetch(url, {
+                method: 'POST', // *GET, POST, PUT, DELETE, etc.
+                mode: "no-cors",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(JSON.stringify(items))
+            })
+        }
+
+        function cleanup() {
+            const textareaElement = document.getElementById("paste-content")
+            textareaElement.value = ""
+        }
+    </script>
+</head>
+
+<body>
+
+    <textarea class="primary-border half-width" id="paste-content">Paste Content</textarea>
+    <textarea id="paste-title">Paste Title</textarea>
+    <button onclick="handleNewPasteClick()">Create paste</button>
+    <div id="wrapper"></div>
+    <input type="checkbox" id="check-password" onclick="handlePasswordCheckbox()">Use Password</input>
+    <select name="code" id="code">
+        <option value="python">python</option>
+        <option value="js">js</option>
+        <option value="c#">c#</option>
+        <option value="mysql">mysql</option>
+      </select>
+    <input type="checkbox" id="burn_after_read">Burn after read</input>
+    </div>
+    <textarea hidden id="password">Password</textarea>
+</body>
+
+</html>
