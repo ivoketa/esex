@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+Paste Con<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -77,4 +77,4 @@
     <pre><code id="paste-placeholder">...</code></pre>
 </body>
 
-</html>
+</html>tent

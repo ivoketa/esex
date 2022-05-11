@@ -19,9 +19,10 @@
              * @type {string}
              */
         const pasteId = components[components.length - 1]
-            /**
-             * Get the paste by id and load it on the page
-             */
+
+        /**
+         * Get the paste by id and load it on the page
+         */
         async function Display() {
             const pasteContent = await getPaste(pasteId)
             const pasteInfo = await getPasteInfo(pasteId)
@@ -33,23 +34,10 @@
             pastePlaceholder.classList.add(pasteInfo.code)
             hljs.highlightAll();
         }
-
-        async function Validate() {
-            const pasteInfo = await getPasteInfo(pasteId)
-            const password = document.getElementById("password").value
-            if (password != pasteInfo.password) {
-                return window.alert("Invalid Password")
-            }
-            document.getElementById("sex").style.display = "none";
-            return Display()
-        }
         async function Checks() {
             const pasteInfo = await getPasteInfo(pasteId)
             if (pasteInfo.use_password == true) {
-                document.getElementById("sex").style.display = "block";
-                const pasteTitle = document.getElementById("title")
-                const pastePlaceholder = document.getElementById("paste-placeholder")
-                pasteTitle.textContent = "Enter Password"
+
             } else {
                 Display()
             }
@@ -70,10 +58,6 @@
 <body>
     <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
     <h1 id="title"></h1>
-    <div id="sex" style="display:none">
-        <textarea id="password"></textarea>
-        <button id="password-button" onclick="Validate()">Unlock</button>
-    </div>
     <pre><code id="paste-placeholder">...</code></pre>
 </body>
 

@@ -38,6 +38,17 @@
                 })
         }
 
+        function makeid(length) {
+            var result = '';
+            var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            var charactersLength = characters.length;
+            for (var i = 0; i < length; i++) {
+                result += characters.charAt(Math.floor(Math.random() *
+                    charactersLength));
+            }
+            return result;
+        }
+
         function getPasteInfo() {
             const pcheck = document.getElementById("check-password").checked
             const burn = document.getElementById("burn_after_read").checked
@@ -45,7 +56,7 @@
             const content = document.getElementById("paste-content").value
             const password = document.getElementById("password").value
             const code = document.getElementById("code").value
-            console.log("Password:", password, "| PasswordCheck:", pcheck, "| Burn:", burn, "| Title:", title, "| Content:", content, "|Code:", code)
+                // console.log("Password:", password, "| PasswordCheck:", pcheck, "| Burn:", burn, "| Title:", title, "| Content:", content, "|Code:", code)
         }
         async function submitPaste(pasteContent) {
             if (!pasteContent) {
@@ -57,7 +68,11 @@
             const content = document.getElementById("paste-content").value
             const password = document.getElementById("password").value
             const code = document.getElementById("code").value
+            const id = await makeid(10)
+            const displaying = document.getElementById("sex")
+            displaying.textContent = `Yout paste id is : ${id}`
             items = {
+                "id": id,
                 "paste": pasteContent,
                 "password": password,
                 "use_password": pcheck,
@@ -66,20 +81,24 @@
                 "burn_after_read": burn
             }
             const url = "http://localhost:8000/api/pastepost/"
-            console.log("Req", JSON.stringify(items))
+
             return await fetch(url, {
                 method: 'POST', // *GET, POST, PUT, DELETE, etc.
-                mode: "no-cors",
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(JSON.stringify(items))
+                body: JSON.stringify(items)
             })
         }
 
         function cleanup() {
             const textareaElement = document.getElementById("paste-content")
             textareaElement.value = ""
+        }
+
+        function Redirect() {
+            const pasta = document.getElementById("paste-search").value
+            window.location.href = `http://localhost:3000/paste/${pasta}`;
         }
     </script>
 </head>
@@ -91,15 +110,31 @@
     <button onclick="handleNewPasteClick()">Create paste</button>
     <div id="wrapper"></div>
     <input type="checkbox" id="check-password" onclick="handlePasswordCheckbox()">Use Password</input>
-    <select name="code" id="code">
-        <option value="python">python</option>
-        <option value="js">js</option>
-        <option value="c#">c#</option>
-        <option value="mysql">mysql</option>
-      </select>
     <input type="checkbox" id="burn_after_read">Burn after read</input>
+    <textarea hidden id="password"></textarea>
+    <select name="code" id="code">
+        <option value="Plain text">Plain text</option>
+        <option value="Python">Python</option>
+        <option value="JavaScript">JavaScript</option>
+        <option value="C#">C#</option>
+        <option value="C">C</option>
+        <option value="C++">C++</option>
+        <option value="Bash">Bash</option>
+        <option value="JSON">JSON</option>
+        <option value="Objective-C">Objective-C</option>
+        <option value="Swift">Swift</option>
+        <option value="SCSS">SCSS</option>
+        <option value="TypeScript">TypeScript</option>
+        <option value="HTML">HTML</option>
+      </select>
     </div>
-    <textarea hidden id="password">Password</textarea>
+    <div>
+        <textarea id="paste-search">Paste Code</textarea>
+        <button onclick="Redirect()">Find paste</button>
+    </div>
+    <div>
+        <p id="sex"></p>
+    </div>
 </body>
 
 </html>
