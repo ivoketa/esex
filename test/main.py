@@ -1,5 +1,6 @@
 from importlib.resources import path
 import json
+import os
 from turtle import title
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -70,6 +71,15 @@ def getPaste(path: str, paste: str):
     with open(Dir) as fp:
         content = fp.read()
     return content
+
+
+@app.get("/api/pastes/delete/{pasteId}")
+def delete(pasteId: str):
+    paste_path = f"./pastes/{pasteId}.txt"
+    os.remove(paste_path)
+    del pastes[pasteId]
+    sync_pastes_file()
+
 
 @app.post("/api/pastepost")
 def pastepost(paste: Item):

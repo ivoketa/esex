@@ -41,7 +41,7 @@
                 return window.alert("Invalid Password")
             }
             document.getElementById("sex").style.display = "none";
-            return Display()
+            return Display(), Burn(pasteId)
         }
         async function Checks() {
             const pasteInfo = await getPasteInfo(pasteId)
@@ -51,11 +51,16 @@
                 const pastePlaceholder = document.getElementById("paste-placeholder")
                 pasteTitle.textContent = "Enter Password"
             } else {
-                Display()
+                return Display(), Burn(pasteId)
             }
         }
         Checks()
-
+        async function Burn(pasteId) {
+            const pasteInfo = await getPasteInfo(pasteId)
+            if (pasteInfo.burn_after_read == true) {
+                fetch(`http://localhost:8000/api/pastes/delete/${pasteId}`)
+            }
+        }
         async function getPasteInfo(pasteId) {
             const response = await fetch(`http://localhost:8000/api/pastes/${pasteId}`)
             return await response.json()
